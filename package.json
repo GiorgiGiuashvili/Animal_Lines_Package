@@ -1,8 +1,8 @@
 {
   "name": "com.appidea.minigames.animal_lines",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "displayName": "animal_lines",
-  "description": "game is about set animals to correct lines",
+  "description": "animal_lines",
   "dependencies": {
     "com.unity.addressables": "1.21.21",
     "com.unity.render-pipelines.universal": "14.0.10"
