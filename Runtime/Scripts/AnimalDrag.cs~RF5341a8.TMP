@@ -1,0 +1,133 @@
+﻿using System.Collections;
+using UnityEngine;
+
+public class AnimalDrag : MonoBehaviour
+{
+    private Vector3 originalPosition;
+    private Vector3 offset;
+    private bool isDragging = false;
+    private bool isPlaced = false;
+
+    public Transform targetPosition;
+    public string correctTag = "";
+
+    private AnimalSpawner animalSpawner;
+    private float smoothSpeed = 5f;
+
+    private void Start()
+    {
+        animalSpawner = FindObjectOfType<AnimalSpawner>();
+    }
+
+    private void Update()
+    {
+        if (isPlaced) return;
+
+        // Touch input
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            Vector3 touchPosition = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane));
+
+            switch (touch.phase)
+            {
+                case TouchPhase.Began:
+                    if (IsTouchingObject(touchPosition))
+                    {
+                        StartDragging(touchPosition);
+                    }
+                    break;
+
+                case TouchPhase.Moved:
+                    if (isDragging)
+                    {
+                        DragObject(touchPosition);
+                    }
+                    break;
+
+                case TouchPhase.Ended:
+                    if (isDragging)
+                    {
+                        StopDragging();
+                    }
+                    break;
+            }
+        }
+        // Mouse input (Gasatestad waishleba chasmis dros)
+        else if (Input.GetMouseButtonDown(0))
+        {
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane));
+            if (IsTouchingObject(mousePosition))
+            {
+                StartDragging(mousePosition);
+            }
+        }
+        else if (Input.GetMouseButton(0) && isDragging)
+        {
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane));
+            DragObject(mousePosition);
+        }
+        else if (Input.GetMouseButtonUp(0) && isDragging)
+        {
+            StopDragging();
+        }
+    }
+
+    private bool IsTouchingObject(Vector3 position)
+    {
+        Collider2D hitCollider = Physics2D.OverlapPoint(position);
+        return hitCollider != null && hitCollider.gameObject == gameObject;
+    }
+
+    private void StartDragging(Vector3 position)
+    {
+        originalPosition = transform.position;
+        offset = transform.position - position;
+        isDragging = true;
+    }
+
+    private void DragObject(Vector3 position)
+    {
+        transform.position = new Vector3(position.x + offset.x, position.y + offset.y, transform.position.z);
+    }
+
+    private void StopDragging()
+    {
+        isDragging = false;
+        CheckDropPosition();
+    }
+
+    private void CheckDropPosition()
+    {
+        if (targetPosition != null && IsInsideTriggerArea())
+        {
+            StartCoroutine(SmoothMoveToTargetPosition(targetPosition.position));
+            isPlaced = true;
+            animalSpawner?.AnimalPlaced();
+        }
+        else
+        {
+            StartCoroutine(SmoothMoveToTargetPosition(originalPosition));
+        }
+    }
+
+    private bool IsInsideTriggerArea()
+    {
+        Collider2D hitCollider = Physics2D.OverlapPoint(transform.position);
+        return hitCollider != null && hitCollider.CompareTag(correctTag);
+    }
+
+    private IEnumerator SmoothMoveToTargetPosition(Vector3 target)
+    {
+        float distance = Vector3.Distance(transform.position, target);
+        float time = 0;
+
+        while (time < distance / smoothSpeed)
+        {
+            transform.position = Vector3.Lerp(transform.position, target, time / (distance / smoothSpeed));
+            time += Time.deltaTime;
+            yield return null;
+        }
+        transform.position = target;
+    }
+}

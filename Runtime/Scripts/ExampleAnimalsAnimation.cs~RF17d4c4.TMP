@@ -1,0 +1,31 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ExampleAnimalsAnimation : MonoBehaviour
+{
+    private string HappyAnimation = "Happy";
+
+    void PlayAnimationOnExampleAnimal()
+    {
+        GameObject[] animals = GameObject.FindGameObjectsWithTag("Animals");
+
+        foreach (GameObject animal in animals)
+        {
+            AnimalDrag animalDrag = animal.GetComponent<AnimalDrag>();
+            if (animalDrag != null)
+            {
+                animalDrag.SetSpineAnimation(HappyAnimation, true);
+                foreach (Transform child in animal.transform)
+                {
+                    animalDrag = child.GetComponent<AnimalDrag>();
+                    if (animalDrag != null)
+                    {
+                        animalDrag.SetSpineAnimation(HappyAnimation, true);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "com.appidea.minigames.animal_lines",
+  "version": "0.1.1",
+  "displayName": "animal_lines",
+  "description": "game is about set animals to correct lines",
+  "dependencies": {
+    "com.unity.addressables": "1.21.21",
+    "com.unity.render-pipelines.universal": "14.0.10"
+  },
+  "unity": "2022.3",
+  "author": {
+    "name": "Giorgi Giuashvili"
+  }
+}

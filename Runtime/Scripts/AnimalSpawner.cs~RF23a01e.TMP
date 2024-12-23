@@ -1,0 +1,44 @@
+using UnityEngine;
+
+public class AnimalSpawner : MonoBehaviour
+{
+    public GameObject[] animalSet1;
+    public GameObject[] animalSet2;
+    public GameObject[] animalSet3;
+
+    public Transform spawnPosition1;
+    public Transform spawnPosition2;
+    public Transform spawnPosition3;
+
+    void Start()
+    {
+        // Ensure the sets are not empty before spawning
+        if (animalSet1.Length > 0 && spawnPosition1 != null)
+        {
+            SpawnAnimals(animalSet1, spawnPosition1);
+        }
+
+        if (animalSet2.Length > 0 && spawnPosition2 != null)
+        {
+            SpawnAnimals(animalSet2, spawnPosition2);
+        }
+
+        if (animalSet3.Length > 0 && spawnPosition3 != null)
+        {
+            SpawnAnimals(animalSet3, spawnPosition3);
+        }
+    }
+
+    void SpawnAnimals(GameObject[] animalSet, Transform spawnPosition)
+    {
+        if (animalSet.Length == 0 || spawnPosition == null)
+        {
+            return;
+        }
+
+
+        GameObject spawnedAnimal = Instantiate(animalSet[0], spawnPosition.position, Quaternion.identity);
+
+        spawnedAnimal.transform.SetParent(transform);
+    }
+}

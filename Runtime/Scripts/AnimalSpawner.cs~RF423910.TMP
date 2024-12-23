@@ -1,0 +1,68 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public class AnimalSpawner : MonoBehaviour
+{
+    public List<GameObject> animalSet1;  
+    public List<GameObject> animalSet2;  
+    public List<GameObject> animalSet3;  
+
+    public List<Transform> spawnPositions;
+
+    private int currentSetIndex = 0;
+
+    private List<List<GameObject>> animalSets;
+
+    private List<GameObject> spawnedAnimals = new List<GameObject>();
+
+    void Start()
+    {
+        animalSets = new List<List<GameObject>> { animalSet1, animalSet2, animalSet3 };
+
+        SpawnAnimals(currentSetIndex);
+    }
+
+    void SpawnAnimals(int setIndex)
+    {
+        if (setIndex >= animalSets.Count)
+        {
+            Debug.LogWarning("Set index is out of range!");
+            return;
+        }
+
+        Debug.Log($"Spawning animals for set index: {setIndex}");
+
+        spawnedAnimals.Clear();
+
+        for (int i = 0; i < animalSets[setIndex].Count; i++)
+        {
+            int positionIndex = setIndex * animalSets[setIndex].Count + i;
+
+            if (positionIndex >= spawnPositions.Count)
+            {
+                Debug.LogError($"Not enough spawn positions for this set of animals at set index {setIndex}!");
+                return;
+            }
+
+            Transform spawnPos = spawnPositions[positionIndex];
+            GameObject animalPrefab = animalSets[setIndex][i];
+            GameObject spawnedAnimal = Instantiate(animalPrefab, spawnPos.position, Quaternion.identity);
+
+            spawnedAnimal.transform.SetParent(transform);
+            spawnedAnimals.Add(spawnedAnimal);
+
+            Debug.Log($"Spawned {animalPrefab.name} at position {spawnPos.position} for set index {setIndex}");
+        }
+    }
+
+
+    public void OnAllAnimalsPlacedCorrectly()
+    {
+        currentSetIndex++;
+
+        if (currentSetIndex < animalSets.Count)
+        {
+            SpawnAnimals(currentSetIndex);
+        }
+    }
+}

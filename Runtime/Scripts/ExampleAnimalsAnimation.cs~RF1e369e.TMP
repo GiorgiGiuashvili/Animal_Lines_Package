@@ -1,0 +1,39 @@
+using UnityEngine;
+using Spine.Unity;
+
+public class ExampleAnimalsAnimation : MonoBehaviour
+{
+    public string animationName = "Happy"; 
+    public bool loop = true;
+    public GameObject[] targetGameObjects; 
+
+    public void PlayAnimations()
+    {
+        if (targetGameObjects == null || targetGameObjects.Length == 0)
+        {
+            SkeletonAnimation[] allAnimations = FindObjectsOfType<SkeletonAnimation>();
+
+            foreach (SkeletonAnimation skeleton in allAnimations)
+            {
+                skeleton.AnimationState.SetAnimation(0, animationName, loop);
+                Debug.Log($"Playing animation '{animationName}' on {skeleton.gameObject.name}");
+            }
+        }
+        else
+        {
+            foreach (GameObject obj in targetGameObjects)
+            {
+                SkeletonAnimation skeleton = obj.GetComponent<SkeletonAnimation>();
+                if (skeleton != null)
+                {
+                    skeleton.AnimationState.SetAnimation(0, animationName, loop);
+                    Debug.Log($"Playing animation '{animationName}' on {obj.name}");
+                }
+                else
+                {
+                    Debug.LogWarning($"No SkeletonAnimation found on {obj.name}");
+                }
+            }
+        }
+    }
+}

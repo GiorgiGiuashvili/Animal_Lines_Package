@@ -1,0 +1,70 @@
+using UnityEngine;
+using System.Collections.Generic;
+
+public class AnimalSpawner : MonoBehaviour
+{
+    public List<GameObject> animalSet1;
+    public List<GameObject> animalSet2;
+    public List<GameObject> animalSet3;
+
+    public Transform spawnPosition1;
+    public Transform spawnPosition2;
+    public Transform spawnPosition3;
+
+    private int placedAnimalCount = 0;
+    [Space]
+    public GameObject FinishPanel;
+
+    void Start()
+    {
+        SpawnNextAnimals();
+    }
+
+    void SpawnNextAnimals()
+    {
+        if (animalSet1.Count == 0 && animalSet2.Count == 0 && animalSet3.Count == 0)
+        {
+            FinishPanel.SetActive(true);
+            Debug.Log("Game Over! All animals placed.");
+            return;
+        }
+
+        if (animalSet1.Count > 0)
+        {
+            SpawnAnimal(animalSet1[0], spawnPosition1);
+            animalSet1.RemoveAt(0);
+        }
+
+        if (animalSet2.Count > 0)
+        {
+            SpawnAnimal(animalSet2[0], spawnPosition2);
+            animalSet2.RemoveAt(0);
+        }
+
+        if (animalSet3.Count > 0)
+        {
+            SpawnAnimal(animalSet3[0], spawnPosition3);
+            animalSet3.RemoveAt(0);
+        }
+    }
+
+    void SpawnAnimal(GameObject animalPrefab, Transform spawnPosition)
+    {
+        if (animalPrefab != null && spawnPosition != null)
+        {
+            GameObject spawnedAnimal = Instantiate(animalPrefab, spawnPosition.position, Quaternion.identity);
+            spawnedAnimal.transform.SetParent(transform);
+        }
+    }
+
+    public void AnimalPlaced()
+    {
+        placedAnimalCount++;
+
+        if (placedAnimalCount == 3)
+        {
+            placedAnimalCount = 0;
+            SpawnNextAnimals();
+        }
+    }
+}

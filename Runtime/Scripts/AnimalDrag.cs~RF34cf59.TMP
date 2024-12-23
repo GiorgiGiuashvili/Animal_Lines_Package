@@ -1,0 +1,62 @@
+using UnityEngine;
+
+public class AnimalDrag : MonoBehaviour
+{
+    private Vector3 originalPosition;
+    private Vector3 offset;
+    private bool isDragging = false;
+    private bool isPlaced = false;
+
+    public Transform targetPosition; 
+    public string correctTag = ""; 
+
+    private void OnMouseDown()
+    {
+        if (isPlaced) return;
+
+        originalPosition = transform.position;
+        isDragging = true;
+        offset = transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane));
+    }
+
+    private void OnMouseDrag()
+    {
+        if (isDragging && !isPlaced)
+        {
+            Vector3 newPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane)) + offset;
+            transform.position = new Vector3(newPosition.x, newPosition.y, transform.position.z);
+        }
+    }
+
+    private void OnMouseUp()
+    {
+        if (isPlaced) return;
+
+        isDragging = false;
+        CheckDropPosition();
+    }
+
+    private void CheckDropPosition()
+    {
+        if (targetPosition != null && IsInsideTriggerArea())
+        {
+            transform.position = targetPosition.position;
+            isPlaced = true;
+        }
+        else
+        {
+            transform.position = originalPosition;
+        }
+    }
+
+    private bool IsInsideTriggerArea()
+    {
+        Collider2D hitCollider = Physics2D.OverlapPoint(transform.position);
+        if (hitCollider != null && hitCollider.CompareTag(correctTag))
+        {
+            return true;
+
+        }
+        return false;
+    }
+}

@@ -1,0 +1,74 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public class AnimalSpawner : MonoBehaviour
+{
+    public List<GameObject> animalSet1;
+    public List<GameObject> animalSet2;
+    public List<GameObject> animalSet3;
+
+    public List<Transform> spawnPositions;
+
+    private int currentSetIndex = 0;
+
+    private List<List<GameObject>> animalSets;
+
+    private List<GameObject> spawnedAnimals = new List<GameObject>();
+
+    void Start()
+    {
+        // Initialize animal sets
+        animalSets = new List<List<GameObject>> { animalSet1, animalSet2, animalSet3 };
+
+        // Debug logs to verify the lists
+        Debug.Log($"animalSet1 count: {animalSet1.Count}");
+        Debug.Log($"animalSet2 count: {animalSet2.Count}");
+        Debug.Log($"animalSet3 count: {animalSet3.Count}");
+
+        SpawnAnimals(currentSetIndex);
+    }
+
+    void SpawnAnimals(int setIndex)
+    {
+        if (setIndex >= animalSets.Count)
+        {
+            Debug.LogWarning("Set index is out of range!");
+            return;
+        }
+
+        Debug.Log($"Spawning animals for set index: {setIndex}");
+
+        spawnedAnimals.Clear();
+
+        for (int i = 0; i < animalSets[setIndex].Count; i++)
+        {
+            if (i >= spawnPositions.Count)
+            {
+                Debug.LogError("Not enough spawn positions for this set of animals!");
+                return;
+            }
+
+            GameObject animalPrefab = animalSets[setIndex][i];
+            Transform spawnPos = spawnPositions[i];
+            GameObject spawnedAnimal = Instantiate(animalPrefab, spawnPos.position, Quaternion.identity);
+
+            spawnedAnimal.transform.SetParent(transform);
+            spawnedAnimals.Add(spawnedAnimal);
+        }
+    }
+
+    public void OnAllAnimalsPlacedCorrectly()
+    {
+        currentSetIndex++;
+
+        if (currentSetIndex < animalSets.Count)
+        {
+            Debug.Log($"Moving to the next set: {currentSetIndex}");
+            SpawnAnimals(currentSetIndex);
+        }
+        else
+        {
+            Debug.Log("All animal sets have been spawned.");
+        }
+    }
+}

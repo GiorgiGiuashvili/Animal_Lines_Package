@@ -1,0 +1,58 @@
+using UnityEngine;
+
+public class AnimalSpawner : MonoBehaviour
+{
+    public GameObject[] animalSet1;
+    public GameObject[] animalSet2;
+    public GameObject[] animalSet3;
+
+    public Transform spawnPosition1;
+    public Transform spawnPosition2;
+    public Transform spawnPosition3;
+
+    private int placedAnimalCount = 0;
+    private GameObject[] currentAnimalSet;
+    private int currentAnimalIndex = 0;
+
+    void Start()
+    {
+        currentAnimalSet = animalSet1;
+        SpawnNextAnimals();
+    }
+
+    void SpawnNextAnimals()
+    {
+        if (currentAnimalSet.Length == 0)
+        {
+            return;
+        }
+
+        if (currentAnimalIndex < currentAnimalSet.Length)
+        {
+            SpawnAnimal(currentAnimalSet[currentAnimalIndex], spawnPosition1);
+            SpawnAnimal(currentAnimalSet[currentAnimalIndex + 1], spawnPosition2);
+            SpawnAnimal(currentAnimalSet[currentAnimalIndex + 2], spawnPosition3);
+        }
+    }
+
+    void SpawnAnimal(GameObject animalPrefab, Transform spawnPosition)
+    {
+        if (animalPrefab != null && spawnPosition != null)
+        {
+            GameObject spawnedAnimal = Instantiate(animalPrefab, spawnPosition.position, Quaternion.identity);
+            spawnedAnimal.transform.SetParent(transform);
+        }
+    }
+
+    public void AnimalPlaced()
+    {
+        placedAnimalCount++;
+
+        if (placedAnimalCount == 3)
+        {
+            placedAnimalCount = 0;
+            currentAnimalIndex += 3;
+            SpawnNextAnimals();
+        }
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "name": "com.appidea.MiniGamePlatform.Animal_Lines",
+    "rootNamespace": "com.appidea.MiniGamePlatform.Animal_Lines",
+    "references": [
+        "com.appidea.MiniGamePlatform.CommunicationAPI",
+        "Unity.Addressables",
+        "Unity.TextMeshPro",
+        "spine-unity",
+        "spine-csharp"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
