@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: MiniGameConfig
   m_EditorClassIdentifier: 
   MiniGameName: Animal_Lines
-  Version: 0.1.0
+  Version: 0.1.1
   Url: https://pub-a9fd3efede8f42a1b91e92fe2519737a.r2.dev
   CustomRenderPipelineAsset: {fileID: 0}

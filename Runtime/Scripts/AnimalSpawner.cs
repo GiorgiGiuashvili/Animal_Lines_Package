@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class AnimalSpawner : MonoBehaviour
 {
+    public static AnimalSpawner Instance { get; private set; }
+
     public List<GameObject> Set1;
     public List<GameObject> Set2;
     public List<GameObject> Set3;
@@ -34,6 +36,13 @@ public class AnimalSpawner : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
         homeButton.onClick.AddListener(FinishOnButton);
     }
     private void FinishOnButton()

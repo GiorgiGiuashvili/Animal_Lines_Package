@@ -10,7 +10,7 @@ public class AnimalDrag : MonoBehaviour
     private bool isPlaced = false;
 
     public Transform targetPosition;
-    public string correctTag = ""; // Expected tag for this animal
+    public string correctTag = "";
 
     private AnimalSpawner _Spawner;
     private bool moving = false;
@@ -19,6 +19,7 @@ public class AnimalDrag : MonoBehaviour
     private float snapThreshold = 0.1f;
     private float snapSpeed = 3;
     public float animationDelay;
+    public int SortingOrder;
 
     private bool isInsideTriggerArea = false;
 
@@ -26,7 +27,7 @@ public class AnimalDrag : MonoBehaviour
     {
         skeletonAnimation = GetComponent<SkeletonAnimation>();
         transform.localScale = new Vector3(0.20f, 0.20f, 0.20f);
-        _Spawner = FindObjectOfType<AnimalSpawner>(); // Safely assign spawner if not preassigned
+        skeletonAnimation.GetComponent<Renderer>().sortingOrder = SortingOrder;  
     }
 
     private void Update()
@@ -178,6 +179,7 @@ public class AnimalDrag : MonoBehaviour
         originalPosition = transform.position;
         offset = transform.position - position;
         isDragging = true;
+        SortingOrder += 1;
     }
 
     private IEnumerator SmoothSnapToTargetPosition(Vector3 targetPos)
@@ -201,8 +203,9 @@ public class AnimalDrag : MonoBehaviour
         else
         {
             isPlaced = true;
-            _Spawner?.ObjectPlaced();
+            AnimalSpawner.Instance?.ObjectPlaced();
             transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
+            SortingOrder -= 1;
         }
     }
 }

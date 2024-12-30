@@ -6,36 +6,32 @@ public class ExampleAnimalsAnimation : MonoBehaviour
 {
     public string animationName = "Happy";
     public bool loop = true;
-    public GameObject[] targetGameObjects;
+    public SkeletonAnimation[] targetAnimations; // Explicitly assign SkeletonAnimation components here
 
-    public float delayForFirst = 1.0f;  
+    public float delayForFirst = 1.0f;
     public float delayForSecond = 2.0f;
-    public float delayForThird = 3.0f;  
+    public float delayForThird = 3.0f;
 
     public void PlayAnimations()
     {
-        if (targetGameObjects == null || targetGameObjects.Length == 0)
+        if (targetAnimations == null || targetAnimations.Length == 0)
         {
-            SkeletonAnimation[] allAnimations = FindObjectsOfType<SkeletonAnimation>();
-
-            foreach (SkeletonAnimation skeleton in allAnimations)
-            {
-                StartCoroutine(PlayAnimationWithDelay(skeleton, delayForFirst));
-            }
+            Debug.LogWarning("No SkeletonAnimation targets assigned.");
+            return;
         }
-        else
+
+        for (int i = 0; i < targetAnimations.Length; i++)
         {
-            for (int i = 0; i < targetGameObjects.Length; i++)
+            SkeletonAnimation skeleton = targetAnimations[i];
+
+            if (skeleton != null)
             {
-                GameObject obj = targetGameObjects[i];
-                SkeletonAnimation skeleton = obj.GetComponent<SkeletonAnimation>();
-
                 float delay = i == 0 ? delayForFirst : i == 1 ? delayForSecond : delayForThird;
-
-                if (skeleton != null)
-                {
-                    StartCoroutine(PlayAnimationWithDelay(skeleton, delay));
-                }
+                StartCoroutine(PlayAnimationWithDelay(skeleton, delay));
+            }
+            else
+            {
+                Debug.LogWarning($"SkeletonAnimation target at index {i} is null.");
             }
         }
     }
@@ -43,7 +39,6 @@ public class ExampleAnimalsAnimation : MonoBehaviour
     private IEnumerator PlayAnimationWithDelay(SkeletonAnimation skeleton, float delay)
     {
         yield return new WaitForSeconds(delay);
-
         skeleton.AnimationState.SetAnimation(0, animationName, loop);
     }
 }
